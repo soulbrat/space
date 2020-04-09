@@ -1,20 +1,37 @@
 package com.space.model;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "ship")
 public class Ship {
 
-    private long id;
-    private String name;
-    private String planet;
-    private ShipType shipType;
-    private Date prodDate;
-    private boolean isUsed;
-    private double speed;
-    private int crewSize;
-    private double rating;
+    // primary key
+    @Id
+    //@GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public long id;
+    @Column(name = "name")
+    public String name;
+    // if no Column - it means that Column name named like variable: planet = planet
+    public String planet;
+    public ShipType shipType;
+    public Date prodDate;
+    public boolean isUsed;
+    public double speed;
+    public int crewSize;
+    public double rating;
 
-    public Ship(long id, String name, String planet, ShipType shipType, Date prodDate, boolean isUsed, double speed, int crewSize, double rating) {
+    // requires only for JPA - will not used
+    protected Ship() {
+    }
+
+    // our constructor
+    public Ship(long id, String name, String planet, ShipType shipType, Date prodDate, boolean isUsed, double speed, int crewSize) {
         this.id = id;
         this.name = name;
         this.planet = planet;
@@ -26,7 +43,8 @@ public class Ship {
         this.rating = rating;
     }
 
-    public long getId() {
+
+     public long getId() {
         return id;
     }
 

@@ -14,6 +14,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -21,8 +22,12 @@ import java.util.Properties;
 
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
 
+// https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.java-config
+
+// Tags the class as a source of bean definitions for the application context
 @Configuration
 @EnableTransactionManagement
+// Tells Spring to look for other components, configurations, and services in the com/example package, letting it find the controllers.
 @ComponentScan("com.space.service")
 @EnableJpaRepositories(basePackages = "com.space.repository")
 public class AppConfig {
@@ -46,11 +51,11 @@ public class AppConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         //dataSource.setUrl("jdbc:mysql://localhost:3306/cosmoport?serverTimezone=UTC");
-        dataSource.setUrl("jdbc:mysql://10.0.1.63:3306/cosmoport?serverTimezone=UTC");
+        dataSource.setUrl("jdbc:mysql://10.0.1.60:3306/cosmoport?serverTimezone=UTC");
         //dataSource.setUsername("root");
         dataSource.setUsername("space");
         //dataSource.setPassword("root");
-        dataSource.setPassword("jhgIUWG237e2pod");
+        dataSource.setPassword("jhgIUWG237e2pod!!!");
         return dataSource;
     }
 

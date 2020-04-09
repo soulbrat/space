@@ -23,7 +23,7 @@ public interface ShipService {
      * @param id - ship ID
      * @return - ship object with given ID
      */
-    Ship read(int id);
+    Ship read(long id);
 
     /**
      * Updates the ship with the given ID,
@@ -32,13 +32,13 @@ public interface ShipService {
      * @param id - id of the ship whose update you want
      * @return - true if the data has been updated, otherwise false
      */
-    boolean update(Ship ship, int id);
+    boolean update(Ship ship, long id);
 
     /**
      * Deletes the ship with the given ID
      * @param id - id of the ship to be deleted
      * @return - true if the ship was deleted, otherwise false
      */
-    boolean delete(int id);
+    boolean delete(long id);
 
 }

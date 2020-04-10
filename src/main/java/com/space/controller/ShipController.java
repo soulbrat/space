@@ -59,4 +59,13 @@ public class ShipController {
         final long shipsCount = shipService.count();
         return new ResponseEntity<>(shipsCount, HttpStatus.OK);
     }
+
+    // delete
+    @DeleteMapping(value = "/rest/ships/{id}")
+    public ResponseEntity<?> delete(@PathVariable(required = true) long id) {
+        System.out.println("DEBUG: CONTROLLER DELETE");
+        boolean isDeleted = shipService.delete(id);
+        return isDeleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

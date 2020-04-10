@@ -1,7 +1,9 @@
 package com.space.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 @Entity
 @Table(name = "ship")
@@ -86,6 +88,8 @@ public class Ship {
 
     @Override
     public String toString() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        String formatDate = df.format(getProdDate());
         return String.format("Ship: {" +
                 "id: %s, name: %s, " +
                 "planet: %s, " +
@@ -95,6 +99,6 @@ public class Ship {
                 "speed: %s, " +
                 "crewSize: %s, " +
                 "rating: %s" +
-                "}", getId(), getName(), getPlanet(), getShipType(), getProdDate(), isUsed(), getSpeed(), getCrewSize(), getRating());
+                "}", getId(), getName(), getPlanet(), getShipType(), formatDate, isUsed(), getSpeed(), getCrewSize(), getRating());
     }
 }

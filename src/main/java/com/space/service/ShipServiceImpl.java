@@ -27,14 +27,15 @@ public class ShipServiceImpl implements ShipService {
     @Autowired
     private ShipsRepository shipsRepository;
 
+    // create
     @Override
     public void create(Ship ship) {
         System.out.println("DEBUG: ShipServiceImpl CREATE");
         System.out.println("/**** Check INPUT parameters");
-        System.out.println(ship.toString());
         shipsRepository.save(ship);
         if (isExistByID(ship.id)){
             System.out.println("SHIP CREATED SUCCESSFULLY!");
+            System.out.println(ship.toString());
         }
         System.out.println("***********************");
     }
@@ -54,7 +55,6 @@ public class ShipServiceImpl implements ShipService {
         // result list
         List<Ship> ships = new ArrayList<>();
         System.out.println("DEBUG: ShipServiceImpl SHOW ALL (with params)");
-
         ships = shipsRepository.findAll();
         return ships;
     }
@@ -67,8 +67,6 @@ public class ShipServiceImpl implements ShipService {
     public boolean isExistByID(long id) {
         return shipsRepository.existsById(id);
     }
-
-
 
     @Override
     public long count() {
@@ -89,6 +87,7 @@ public class ShipServiceImpl implements ShipService {
     public boolean delete(long id) {
         if (shipsRepository.existsById(id)) {
             shipsRepository.deleteById(id);
+            System.out.println(String.format("DEBUG: Ship with ID %d deleted successfully.", id));
             return true;
         }
         return false;

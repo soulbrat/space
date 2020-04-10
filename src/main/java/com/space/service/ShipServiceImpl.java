@@ -39,6 +39,7 @@ public class ShipServiceImpl implements ShipService {
         System.out.println("***********************");
     }
 
+    // get without params
     @Override
     public List<Ship> readAll() {
         List<Ship> ships = new ArrayList<>();
@@ -47,6 +48,16 @@ public class ShipServiceImpl implements ShipService {
             ships = shipsRepository.findAll();
         return ships;
     }
+    // get with params
+    // Parameters are [name=www, shipType=MERCHANT, after=-62126972453848, isUsed=true, pageNumber=0, pageSize=3, order=ID]
+    public List<Ship> readAll(Map<String, String> allParams) {
+        List<Ship> ships = new ArrayList<>();
+        System.out.println("DEBUG: ShipServiceImpl SHOW ALL");
+
+        ships = shipsRepository.findAll();
+        return ships;
+    }
+
 
 
 

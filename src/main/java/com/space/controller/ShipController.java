@@ -13,45 +13,45 @@ import java.util.Map;
 /*
 @RestController — говорит спрингу, что данный класс является REST контроллером.
 Т.е. в данном классе будет реализована логика обработки клиентских запросов
+
+Params - https://www.baeldung.com/spring-request-param
 */
 @RestController
 public class ShipController {
-
-    private ShipService shipService;
 
     /* Dependency Injection
     @Autowired — говорит спрингу, что в этом месте необходимо внедрить зависимость.
     В конструктор мы передаем интерфейс ShipService. Реализацию данного сервиса мы пометили аннотацией
     @Service ранее, и теперь спринг сможет передать экземпляр этой реализации в конструктор контроллера.
     */
+    private ShipService shipService;
+
     @Autowired
     public ShipController(ShipService shipService) {
         this.shipService = shipService;
     }
 
-    // create
-    @PostMapping(value = "/rest/ships")
-    public ResponseEntity<?> create(@RequestBody Ship ship) {
-        shipService.create(ship);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    // get all
+    // get
     @GetMapping(value = "/rest/ships")
     public ResponseEntity<List<Ship>> readAll(
             @RequestParam(required = false) Map<String,String> allParams
     ) {
         System.out.println("DEBUG: CONTROLLER GET readAll");
-        System.out.println("Parameters are " + allParams.entrySet();
+        System.out.println("Parameters are " + allParams.entrySet());
         final List<Ship> ships = shipService.readAll();
         return ships != null &&  !ships.isEmpty()
                 ? new ResponseEntity<>(ships, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    // get with params
-    public String getFoos(@RequestParam(required = false) String id) {
-        return "ID: " + id;
+
+    // create
+    @PostMapping(value = "/rest/ships")
+    public ResponseEntity<?> create(@RequestBody Ship ship) {
+        System.out.println("DEBUG: CONTROLLER CREATE");
+        shipService.create(ship);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     // count
     @GetMapping(value = "/rest/ships/count")
     public ResponseEntity<Long> count() {

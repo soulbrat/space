@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /*
 @RestController — говорит спрингу, что данный класс является REST контроллером.
@@ -38,9 +39,10 @@ public class ShipController {
     // get all
     @GetMapping(value = "/rest/ships")
     public ResponseEntity<List<Ship>> readAll(
-            @RequestParam(required = false) String name
+            @RequestParam(required = false) Map<String,String> allParams
     ) {
         System.out.println("DEBUG: CONTROLLER GET readAll");
+        System.out.println("Parameters are " + allParams.entrySet();
         final List<Ship> ships = shipService.readAll();
         return ships != null &&  !ships.isEmpty()
                 ? new ResponseEntity<>(ships, HttpStatus.OK)

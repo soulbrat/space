@@ -25,6 +25,8 @@ public interface ShipService {
      */
     Ship read(long id);
 
+    boolean isExistByID(long id);
+
     /**
      * Return ships count
      * @return - ships count

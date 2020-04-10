@@ -39,7 +39,7 @@ public class ShipController {
         System.out.println("DEBUG: CONTROLLER GET readAll");
         System.out.println("Parameters are " + allParams.entrySet());
         final List<Ship> ships = shipService.readAll();
-        return ships != null &&  !ships.isEmpty()
+        return ships != null && !ships.isEmpty()
                 ? new ResponseEntity<>(ships, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

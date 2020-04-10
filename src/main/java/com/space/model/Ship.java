@@ -11,9 +11,9 @@ public class Ship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //AUTO, SEQUENCE, TABLE
     public long id;
-    @Column(name = "name")
+    @Column(name = "name", length = 50)
     public String name;
-    @Column(name = "planet")
+    @Column(name = "planet", length = 50)
     public String planet;
     @Column(name = "shipType")
     @Enumerated(EnumType.STRING)

@@ -33,7 +33,7 @@ public class ShipServiceImpl implements ShipService {
         System.out.println("/**** Check INPUT parameters");
         System.out.println(ship.toString());
         shipsRepository.save(ship);
-        if (shipsRepository.existsById(ship.id)){
+        if (isExistByID(ship.id)){
             System.out.println("SHIP CREATED SUCCESSFULLY!");
         }
         System.out.println("***********************");
@@ -43,7 +43,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public List<Ship> readAll() {
         List<Ship> ships = new ArrayList<>();
-        System.out.println("DEBUG: ShipServiceImpl SHOW ALL");
+        System.out.println("DEBUG: ShipServiceImpl SHOW ALL (empty)");
 
             ships = shipsRepository.findAll();
         return ships;
@@ -51,20 +51,24 @@ public class ShipServiceImpl implements ShipService {
     // get with params
     // Parameters are [name=www, shipType=MERCHANT, after=-62126972453848, isUsed=true, pageNumber=0, pageSize=3, order=ID]
     public List<Ship> readAll(Map<String, String> allParams) {
+        // result list
         List<Ship> ships = new ArrayList<>();
-        System.out.println("DEBUG: ShipServiceImpl SHOW ALL");
+        System.out.println("DEBUG: ShipServiceImpl SHOW ALL (with params)");
 
         ships = shipsRepository.findAll();
         return ships;
     }
 
-
-
-
     @Override
     public Ship read(long id) {
         return shipsRepository.getOne(id);
     }
+    @Override
+    public boolean isExistByID(long id) {
+        return shipsRepository.existsById(id);
+    }
+
+
 
     @Override
     public long count() {

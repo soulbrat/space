@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /*
 Аннотация @Service говорит спрингу, что данный класс является сервисом.
@@ -23,32 +22,42 @@ private String  firstName;
 */
 
 @Service
-//@Repository(value = "shipsRepository")
 public class ShipServiceImpl implements ShipService {
 
-    //@Autowired
-    //private ShipsRepository shipsRepository;
-    private final ShipsRepository shipsRepository;
-
-    public ShipServiceImpl(ShipsRepository shipsRepository) {
-        this.shipsRepository = shipsRepository;
-    }
+    @Autowired
+    private ShipsRepository shipsRepository;
 
     @Override
     public void create(Ship ship) {
         System.out.println("DEBUG: ShipServiceImpl CREATE");
+        System.out.println("/**** Check INPUT parameters");
+        System.out.println(ship.toString());
         shipsRepository.save(ship);
+        if (shipsRepository.existsById(ship.id)){
+            System.out.println("SHIP CREATED SUCCESSFULLY!");
+        }
+        System.out.println("***********************");
     }
 
     @Override
     public List<Ship> readAll() {
+        List<Ship> ships = new ArrayList<>();
         System.out.println("DEBUG: ShipServiceImpl SHOW ALL");
-        return shipsRepository.findAll();
+
+            ships = shipsRepository.findAll();
+        return ships;
     }
+
+
 
     @Override
     public Ship read(long id) {
         return shipsRepository.getOne(id);
+    }
+
+    @Override
+    public long count() {
+        return shipsRepository.count();
     }
 
     @Override

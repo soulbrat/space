@@ -5,10 +5,7 @@ import com.space.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,21 +28,33 @@ public class ShipController {
         this.shipService = shipService;
     }
 
-    @PostMapping(value = "/ships")
+    // create
+    @PostMapping(value = "/rest/ships")
     public ResponseEntity<?> create(@RequestBody Ship ship) {
-        System.out.println("DEBUG: CONTROLLER POST");
         shipService.create(ship);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/ships")
-    public ResponseEntity<List<Ship>> read() {
-        System.out.println("DEBUG: CONTROLLER GET");
+    // get all
+    @GetMapping(value = "/rest/ships")
+    public ResponseEntity<List<Ship>> readAll(
+            @RequestParam(required = false) String name
+    ) {
+        System.out.println("DEBUG: CONTROLLER GET readAll");
         final List<Ship> ships = shipService.readAll();
-
         return ships != null &&  !ships.isEmpty()
                 ? new ResponseEntity<>(ships, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
+    // get with params
+    public String getFoos(@RequestParam(required = false) String id) {
+        return "ID: " + id;
+    }
+    // count
+    @GetMapping(value = "/rest/ships/count")
+    public ResponseEntity<Long> count() {
+        System.out.println("DEBUG: CONTROLLER GET count");
+        final long shipsCount = shipService.count();
+        return new ResponseEntity<>(shipsCount, HttpStatus.OK);
+    }
 }

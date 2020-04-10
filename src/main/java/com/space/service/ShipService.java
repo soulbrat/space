@@ -26,6 +26,12 @@ public interface ShipService {
     Ship read(long id);
 
     /**
+     * Return ships count
+     * @return - ships count
+     */
+    long count();
+
+    /**
      * Updates the ship with the given ID,
      * in accordance with the transferred client
      * @param ship - the ship according to which you need to update data

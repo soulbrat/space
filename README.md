@@ -10,8 +10,10 @@ This Project based on:
 
 For run the project:
 - install Tomcat;
-- install MySQL, import DataBase from init.sql and create username with password;
+- install MySQL, import database from init.sql and create user with password;
 - configure MySQL user and password in AppConfig.java;
 - compile project with Maven used command:
   $ mvn -DskipTests=true clean install
 - deploy project into Tomcat;
+
+![alt text](https://github.com/soulbrat/space/edit/master/space.PNG)

@@ -384,14 +384,61 @@ public class ShipHelper {
 
 
     // return updated ship by provided parameters
-    public static Ship getUpdatedShip(Ship ship, Map<String, String> allParameters){
+    public static Ship getUpdatedShip(Ship ship, Map<String, String> allParams){
         /*
         * must be updated only not null fields
         * fields ID and Rating from Request Body must be ignored
         * while creation or updating we need to recount ship rating by formula
         */
         ShipHelper.printMessage("DEBUG: getUpdatedShip");
+        // get new Rating
         double rating = getNewRating(ship);
+        printMessage("DEBUG: rating: " + rating);
+        if (!allParams.isEmpty()){
+            // possible parameters: [name, planet, shipType, prodDate, isUsed, speed, crewSize]
+            ShipHelper.printMessage("DEBUG: getUpdatedShip -> set new parameters: " + allParams.entrySet());
+            // name
+            if (allParams.containsKey("name")){
+                String param = allParams.get("name");
+                if (isStringValid(param)){
+                   ship.setName(param);
+                }
+            }
+            // planet
+            if (allParams.containsKey("planet")){
+                if (allParams.containsKey("planet")){
+                    String param = allParams.get("planet");
+                    if (isStringValid(param)){
+                        ship.setPlanet(param);
+                    }
+                }
+            }
+            // shipType
+            if (allParams.containsKey("shipType")){
+                String param = allParams.get("shipType");
+                if (isTypeValid(param)){
+                    ShipType shipType = ShipType.valueOf(param);
+                    ship.setShipType(shipType);
+                }
+            }
+            // Date
+            if (allParams.containsKey("prodDate")){
+                String param = allParams.get("prodDate");
+                if (isLong(param)){
+                    Date prodDate = new Date(Long.parseLong(param));
+                    if (getYearFromDate(prodDate) >= 2800 && getYearFromDate(prodDate) <= 3019){
+                        ship.setProdDate(prodDate);
+                        // example: DEBUG: prodDate '30867438851980' -> valid by YEAR -> 2948
+                        printMessage(String.format("DEBUG: prodDate '%s' -> valid by YEAR -> %s", param, getYearFromDate(prodDate)));
+                    } else {
+                        printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by YEAR -> %s", param, getYearFromDate(prodDate)));
+                    }
+                } else {
+                    printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by Long", param));
+                }
+            }
+
+        }
         return ship;
     }
 
@@ -410,15 +457,37 @@ public class ShipHelper {
         int y1 = getYearFromDate(ship.getProdDate());
         double speed = ship.getSpeed();
 
-        printMessage(String.format("DEBUG: R = ( 80 * %d * %d) / ( %d - %d + 1)", speed, coefficient, y0, y1));
+        printMessage(String.format("DEBUG: R = ( 80 * %s * %s) / ( %s - %s + 1)", speed, coefficient, y0, y1));
 
-
-        double result = 0;
-
+        double d = ( 80 * speed * coefficient) / (y0 - y1 + 1);
+        d = d * 100;
+        int x1 = (int)Math.round(d);
+        double result = (double) x1 / 100;
         return result;
     }
 
-
+    // check String of 'name|planet'
+    public static boolean isStringValid(String param){
+        if (param != null && !param.isEmpty() && param.length() >= 0 && param.length() <= 50){
+            printMessage(String.format("DEBUG: isStringValid '%s' -> valid", param));
+            return true;
+        } else {
+            printMessage(String.format("DEBUG: isStringValid '%s' -> NOT valid", param));
+            return false;
+        }
+    }
+    // check ship type
+    public static boolean isTypeValid(String param){
+        // get Enum from String
+        try {
+            ShipType shipType = ShipType.valueOf(param);
+            printMessage(String.format("DEBUG: isTypeValid '%s' -> valid", param));
+            return true;
+        }catch (Exception e){
+            printMessage(String.format("DEBUG: isTypeValid '%s' -> NOT valid", param));
+            return false;
+        }
+    }
 
 
     // check Long

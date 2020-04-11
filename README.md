@@ -18,4 +18,5 @@ For run the project:
 
 
 
-<img src="https://github.com/soulbrat/space/edit/master/space.PNG" width="600" height="600">
+
+![alt tag](https://github.com/soulbrat/space/edit/master/space.PNG)

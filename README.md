@@ -17,4 +17,5 @@ For run the project:
 - deploy project into Tomcat;
 
 
-![test image size](https://github.com/soulbrat/space/edit/master/space.PNG ){:height="100px" width="100px"}
+
+<img src="https://github.com/soulbrat/space/edit/master/space.PNG" width="400" height="790">

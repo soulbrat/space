@@ -8,9 +8,6 @@ import java.util.*;
 public class ShipHelper {
 
     private static boolean isDebugEnabled = true;
-    private static int pageNumber;
-    private static int pageSize;
-    private static String order;
     public static int count = 0;    // get count of founded ships
 
     public static void printMessage(String message){
@@ -55,33 +52,48 @@ public class ShipHelper {
 
     // get ships by filters
     public static List<Ship> getShipsByFilter(List<Ship> ships, Map<String, String> allParams){
-        List<Ship> result = new ArrayList<>();
-        // name=Falcon9
+        // name
         if (allParams.containsKey("name")){
             ships = getShipsByName(ships, allParams.get("name"));
         }
-        // planet=Mars
+        // planet
         if (allParams.containsKey("planet")){
             ships = getShipsByPlanet(ships, allParams.get("planet"));
         }
-        // shipType=MILITARY
+        // shipType
         if (allParams.containsKey("shipType")){
             ships = getShipsByType(ships, allParams.get("shipType"));
         }
-        // after=32165295455955, before=32228367455955
+        // Date after
         if (allParams.containsKey("after")){
             ships = getShipsByDateAfter(ships, allParams.get("after"));
         }
+        // Date before
         if (allParams.containsKey("before")){
             ships = getShipsByDateBefore(ships, allParams.get("before"));
         }
-        // isUsed=true
-        // minSpeed=0.7, maxSpeed=0.9
-        // minCrewSize=2, maxCrewSize=20
+        // isUsed
+        if (allParams.containsKey("isUsed")){
+            ships = getShipsByUsed(ships, allParams.get("isUsed"));
+        }
+        // minSpeed
+        if (allParams.containsKey("minSpeed")){
+            ships = getShipsByMinSpeed(ships, allParams.get("minSpeed"));
+        }
+        // maxSpeed
+        if (allParams.containsKey("maxSpeed")){
+            ships = getShipsByMaxSpeed(ships, allParams.get("maxSpeed"));
+        }
+        // minCrewSize
+        if (allParams.containsKey("minCrewSize")){
+            ships = getShipsByMinCrewSize(ships, allParams.get("minCrewSize"));
+        }
+        // maxCrewSize
+        if (allParams.containsKey("maxCrewSize")){
+            ships = getShipsByMaxCrewSize(ships, allParams.get("maxCrewSize"));
+        }
         // minRating=1.1, maxRating=1.3
-
-        /* if no filters -> return original list, else -> return new list */
-        return result.size() == 0 ? ships : result;
+        return ships;
     }
 
     // get ships by name
@@ -128,7 +140,7 @@ public class ShipHelper {
         if (isLong(stringAfter)){
             after = Long.parseLong(stringAfter);
         } else {
-            // if after/before not correct -> return not modified list
+            // if after/before is not correct -> return unmodified list
             return ships;
         }
         for (Ship ship : ships) {
@@ -147,7 +159,7 @@ public class ShipHelper {
         if (isLong(stringBefore)){
             before = Long.parseLong(stringBefore);
         } else {
-            // if after/before not correct -> return not modified list
+            // if after/before is not correct -> return unmodified list
             return ships;
         }
         for (Ship ship : ships) {
@@ -159,14 +171,103 @@ public class ShipHelper {
         }
         return result;
     }
+    // get ships by isUsed
+    public static List<Ship> getShipsByUsed(List<Ship> ships, String param) {
+        List<Ship> result = new ArrayList<>();
+        for (Ship ship : ships) {
+            boolean isUsed = getBoolean(param);
+            if (ship.isUsed() == isUsed){
+                printMessage(String.format("DEBUG: getShipsByDate | searchByisUsed %s was found ship %s isUsed = %s", isUsed, ship.getName(), ship.isUsed()));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
+    // get ships by minSpeed
+    public static List<Ship> getShipsByMinSpeed(List<Ship> ships, String param) {
+        List<Ship> result = new ArrayList<>();
+        double minSpeed;
+        if (isDouble(param)){
+            minSpeed = Double.parseDouble(param);
+        } else {
+            // if provided speed is not correct -> return unmodified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            try {
+                if (Double.compare(ship.getSpeed(), minSpeed) >= 0) {
+                    printMessage(String.format("DEBUG: getShipsBySpeed | searchByMinSpeed %s was found ship %s speed = %s", minSpeed, ship.getName(), ship.getSpeed()));
+                    result.add(ship);
+                }
+            }catch (Exception e){
+                printMessage(e.toString());
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    // get ships by maxSpeed
+    public static List<Ship> getShipsByMaxSpeed(List<Ship> ships, String param) {
+        List<Ship> result = new ArrayList<>();
+        double maxSpeed;
+        if (isDouble(param)){
+            maxSpeed = Double.parseDouble(param);
+        } else {
+            // if provided speed is not correct -> return unmodified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            if ((Double.compare(ship.getSpeed(), maxSpeed)) <= 0){
+                printMessage(String.format("DEBUG: getShipsBySpeed | searchByMaxSpeed %s was found ship %s speed = %s", maxSpeed, ship.getName(), ship.getSpeed()));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
+    // get ships by minCrewSize
+    public static List<Ship> getShipsByMinCrewSize(List<Ship> ships, String param) {
+        List<Ship> result = new ArrayList<>();
+        int minCrewSize;
+        if (isDigit(param)){
+            minCrewSize = Integer.parseInt(param);
+        } else {
+            // if provided crewSize is not correct -> return unmodified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            if (ship.getCrewSize() >= minCrewSize){
+                printMessage(String.format("DEBUG: getShipsByMinCrewSize | searchByCrewSize %s was found ship %s crewSize = %s", minCrewSize, ship.getName(), ship.getCrewSize()));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
+    // get ships by maxCrewSize
+    public static List<Ship> getShipsByMaxCrewSize(List<Ship> ships, String param) {
+        List<Ship> result = new ArrayList<>();
+        int maxCrewSize;
+        if (isDigit(param)){
+            maxCrewSize = Integer.parseInt(param);
+        } else {
+            // if provided crewSize is not correct -> return unmodified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            if (ship.getCrewSize() <= maxCrewSize){
+                printMessage(String.format("DEBUG: getShipsByMaxCrewSize | searchByCrewSize %s was found ship %s crewSize = %s", maxCrewSize, ship.getName(), ship.getCrewSize()));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
 
     // get getCorrectPageCount
     public static List<Ship> getCorrectPageCount(List<Ship> ships, Map<String, String> allParams){
         // Example: [pageNumber=0, pageSize=3, order=SPEED]
         // if no pageNumber -> use '0'
         // if no pageSize -> use '3'
-        pageNumber = allParams.containsKey("pageNumber") ? Integer.parseInt(allParams.get("pageNumber")) : 0;
-        pageSize = allParams.containsKey("pageSize") ? Integer.parseInt(allParams.get("pageSize")) : 3;
+        int pageNumber = allParams.containsKey("pageNumber") ? Integer.parseInt(allParams.get("pageNumber")) : 0;
+        int pageSize = allParams.containsKey("pageSize") ? Integer.parseInt(allParams.get("pageSize")) : 3;
 
         //printMessage(String.format("DEBUG: Get pageNumber %d and pageSize %s", pageNumber, pageSize));
 
@@ -180,7 +281,7 @@ public class ShipHelper {
     public static List<Ship> getCorrectSort(List<Ship> ships, Map<String, String> allParams){
         /* if params contais 'order' -> set sort list with correct order */
         if (allParams.containsKey("order")){
-            order = allParams.get("order");
+            String order = allParams.get("order");
             if (order.equals("ID")){
                 //printMessage("Order by ID");
                 ships = sortByID(ships);
@@ -245,11 +346,37 @@ public class ShipHelper {
 
     // check Long
     public static boolean isLong(String param){
-        boolean result = false;
         try {
             long l = Long.parseLong(param);
             return true;
         } catch (Exception e){
+            return false;
+        }
+    }
+    // check Double
+    public static boolean isDouble(String param){
+        try {
+            double l = Double.parseDouble(param);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+    // check Integer
+    public static boolean isDigit(String param){
+        try {
+            int l = Integer.parseInt(param);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    // get boolean from String
+    public static boolean getBoolean(String param){
+        if (param.equals("true")){
+            return true;
+        } else {
             return false;
         }
     }

@@ -381,12 +381,16 @@ public class ShipHelper {
         return ships;
     }
 
-
     // check Long
     public static boolean isLong(String param){
         try {
             long l = Long.parseLong(param);
-            return true;
+            // any long and especially ID must be correct positive numbers
+            if (l >= 0) {
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception e){
             return false;
         }

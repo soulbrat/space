@@ -65,8 +65,18 @@ public class ShipController {
     @DeleteMapping(value = "/rest/ships/{id}")
     public ResponseEntity<?> delete(@PathVariable(required = true) long id) {
         ShipHelper.printMessage("DEBUG: CONTROLLER DELETE");
+        // check ID, if false -> 400
+        if (!ShipHelper.isLong(String.valueOf(id))){
+            ShipHelper.printMessage("DEBUG: HttpStatus.BAD_REQUEST 400");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        // check ship in DB, if not found -> 404
+        if (!shipService.isExistByID(id)){
+            ShipHelper.printMessage("DEBUG: HttpStatus.NOT_FOUND 404");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        // delete ship
         boolean isDeleted = shipService.delete(id);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return isDeleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 }

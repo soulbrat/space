@@ -21,15 +21,74 @@ public class ShipHelper {
     public static List<Ship> getShipsOnPage(List<Ship> ships, Map<String, String> allParams){
 
         ShipHelper.printMessage("DEBUG: getShipsOnPage");
-        // return correct count
-        // Example: [pageNumber=0, pageSize=3]
+
+        /* check additional filters
+        Example of possible parameters: [name=Falcon9, planet=Mars, shipType=MILITARY, after=32165295455955, before=32228367455955, \
+        isUsed=true, minSpeed=0.7, maxSpeed=0.9, minCrewSize=2, maxCrewSize=20, minRating=1.1, maxRating=1.3, \
+        pageNumber=0, pageSize=3, order=ID]
+        */
+        ships = getShipsByFilter(ships, allParams);
+
+        /*
+        return correct size
+        Example: [pageNumber=0, pageSize=3]
+        */
         ships = getCorrectPageCount(ships, allParams);
-        //sort by request
-        // Example: [order=SPEED]
+
+        /*
+        sort by request
+        Example: [order=SPEED]
+        */
         ships = getCorrectSort(ships, allParams);
 
-
         return ships;
+    }
+
+    // get ships by filter
+    public static List<Ship> getShipsByFilter(List<Ship> ships, Map<String, String> allParams){
+        List<Ship> result = new ArrayList<>();
+        // name=Falcon9
+        if (allParams.containsKey("name")){
+            ships = getShipsByName(ships, allParams.get("name"));
+        }
+        // planet=Mars
+        if (allParams.containsKey("planet")){
+            ships = getShipsByPlanet(ships, allParams.get("planet"));
+        }
+        // shipType=MILITARY
+        // after=32165295455955, before=32228367455955
+        // isUsed=true
+        // minSpeed=0.7, maxSpeed=0.9
+        // minCrewSize=2, maxCrewSize=20
+        // minRating=1.1, maxRating=1.3
+
+        /* if no filters -> return original list, else -> return new list */
+        return result.size() == 0 ? ships : result;
+    }
+
+    // get ships by name
+    public static List<Ship> getShipsByName(List<Ship> ships, String name){
+        List<Ship> result = new ArrayList<>();
+        String searchName = name.toLowerCase();
+        for (Ship ship : ships){
+            if (ship.getName().toLowerCase().indexOf(searchName) != -1){
+                printMessage(String.format("DEBUG: getShipsByName | searchByName %s was found ship %s", searchName, ship.getName()));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
+    // get ships by Planet
+    public static List<Ship> getShipsByPlanet(List<Ship> ships, String planet){
+        List<Ship> result = new ArrayList<>();
+        String searchPlanet = planet.toLowerCase();
+        for (Ship ship : ships){
+            if (ship.getPlanet().toLowerCase().indexOf(searchPlanet) != -1){
+                printMessage(String.format("DEBUG: getShipsByPlanet | searchByPlanet %s was found ship %s", searchPlanet, ship.getPlanet()));
+                result.add(ship);
+            }
+        }
+        return result;
     }
 
     // get getCorrectPageCount
@@ -40,7 +99,7 @@ public class ShipHelper {
         pageNumber = allParams.containsKey("pageNumber") ? Integer.parseInt(allParams.get("pageNumber")) : 0;
         pageSize = allParams.containsKey("pageSize") ? Integer.parseInt(allParams.get("pageSize")) : 3;
 
-        printMessage(String.format("DEBUG: Get pageNumber %d and pageSize %s", pageNumber, pageSize));
+        //printMessage(String.format("DEBUG: Get pageNumber %d and pageSize %s", pageNumber, pageSize));
 
         int from = Math.max(0,pageNumber*pageSize);
         int to = Math.min(ships.size(),(pageNumber+1)*pageSize);
@@ -50,19 +109,20 @@ public class ShipHelper {
 
     // get correct sort
     public static List<Ship> getCorrectSort(List<Ship> ships, Map<String, String> allParams){
+        /* if params contais 'order' -> set sort list with correct order */
         if (allParams.containsKey("order")){
             order = allParams.get("order");
             if (order.equals("ID")){
-                printMessage("Order by ID");
+                //printMessage("Order by ID");
                 ships = sortByID(ships);
             } else if (order.equals("SPEED")){
-                printMessage("Order by SPEED");
+                //printMessage("Order by SPEED");
                 ships = sortBySpeed(ships);
             } else if (order.equals("DATE")){
-                printMessage("Order by DATE");
+                //printMessage("Order by DATE");
                 ships = sortByDate(ships);
             } else if (order.equals("RATING")){
-                printMessage("Order by RATING");
+                //printMessage("Order by RATING");
                 ships = sortByRating(ships);
             }
         }
@@ -112,10 +172,6 @@ public class ShipHelper {
         Collections.sort(ships, compareByRating);
         return ships;
     }
-
-    // create correct rating for ship
-
-    // check id - is valide?
 
     // debug ships list
     public static void printShipsList(List<Ship> ships){

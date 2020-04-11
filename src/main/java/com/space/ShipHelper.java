@@ -11,6 +11,7 @@ public class ShipHelper {
     private static int pageNumber;
     private static int pageSize;
     private static String order;
+    public static int count = 0;
 
     public static void printMessage(String message){
         if (isDebugEnabled) {
@@ -42,6 +43,7 @@ public class ShipHelper {
         */
         ships = getCorrectSort(ships, allParams);
 
+        count = ships.size();
         return ships;
     }
 
@@ -191,6 +193,9 @@ public class ShipHelper {
         Collections.sort(ships, compareByRating);
         return ships;
     }
+
+    // get count for founded ships
+
 
     // debug ships list
     public static void printShipsList(List<Ship> ships){

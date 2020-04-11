@@ -55,10 +55,10 @@ public class ShipController {
 
     // count
     @GetMapping(value = "/rest/ships/count")
-    public ResponseEntity<Long> count() {
+    public ResponseEntity<Integer> count() {
         ShipHelper.printMessage("DEBUG: CONTROLLER GET count");
-        final long shipsCount = shipService.count();
-        return new ResponseEntity<>(shipsCount, HttpStatus.OK);
+        //final long shipsCount = shipService.count();
+        return new ResponseEntity<>(ShipHelper.count, HttpStatus.OK);
     }
 
     // delete

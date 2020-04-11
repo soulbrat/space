@@ -38,7 +38,7 @@ public class ShipHelper {
         if (allParams.containsKey("pageNumber") && allParams.containsKey("pageSize")){
             pageNumber = Integer.parseInt(allParams.get("pageNumber"));
             pageSize = Integer.parseInt(allParams.get("pageSize"));
-            printMessage(String.format("Get pageNumber %d and pageSize %s", pageNumber, pageSize));
+            printMessage(String.format("DEBUG: Get pageNumber %d and pageSize %s", pageNumber, pageSize));
 
             int from = Math.max(0,pageNumber*pageSize);
             int to = Math.min(ships.size(),(pageNumber+1)*pageSize);

@@ -424,20 +424,41 @@ public class ShipHelper {
             // Date
             if (allParams.containsKey("prodDate")){
                 String param = allParams.get("prodDate");
-                if (isLong(param)){
+                if (isYearValid(param)){
                     Date prodDate = new Date(Long.parseLong(param));
-                    if (getYearFromDate(prodDate) >= 2800 && getYearFromDate(prodDate) <= 3019){
-                        ship.setProdDate(prodDate);
-                        // example: DEBUG: prodDate '30867438851980' -> valid by YEAR -> 2948
-                        printMessage(String.format("DEBUG: prodDate '%s' -> valid by YEAR -> %s", param, getYearFromDate(prodDate)));
-                    } else {
-                        printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by YEAR -> %s", param, getYearFromDate(prodDate)));
-                    }
-                } else {
-                    printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by Long", param));
+                    ship.setProdDate(prodDate);
                 }
             }
-
+            // isUsed
+            if (allParams.containsKey("isUsed")){
+                String param = allParams.get("isUsed");
+                if (isUsedValid(param)){
+                    boolean isUsed = getBoolean(param);
+                    ship.isUsed = isUsed;
+                }
+            } else {
+                // if no parameter isUsed -> set false;
+                ship.isUsed = false;
+                printMessage(String.format("DEBUG: isUsed '%s' -> false", "NONE"));
+            }
+            // speed
+            if (allParams.containsKey("speed")) {
+                String param = allParams.get("speed");
+                if (isSpeedValid(param)){
+                    double d = Double.parseDouble(param);
+                    double speed = roundDoubleToHunderd(d);
+                    printMessage("DEBUG: speed -> " + speed);
+                    ship.setSpeed(speed);
+                }
+            }
+            // crewSize
+            if (allParams.containsKey("crewSize")) {
+                String param = allParams.get("crewSize");
+                if (isCrewValid(param)){
+                    int crewSize = Integer.parseInt(param);
+                    ship.setCrewSize(crewSize);
+                }
+            }
         }
         return ship;
     }
@@ -460,9 +481,7 @@ public class ShipHelper {
         printMessage(String.format("DEBUG: R = ( 80 * %s * %s) / ( %s - %s + 1)", speed, coefficient, y0, y1));
 
         double d = ( 80 * speed * coefficient) / (y0 - y1 + 1);
-        d = d * 100;
-        int x1 = (int)Math.round(d);
-        double result = (double) x1 / 100;
+        double result = roundDoubleToHunderd(d);
         return result;
     }
 
@@ -488,7 +507,66 @@ public class ShipHelper {
             return false;
         }
     }
-
+    // check Year
+    public static boolean isYearValid(String param){
+        if (isLong(param)){
+            Date prodDate = new Date(Long.parseLong(param));
+            if (getYearFromDate(prodDate) >= 2800 && getYearFromDate(prodDate) <= 3019){
+                // example: DEBUG: prodDate '30867438851980' -> valid by YEAR -> 2948
+                printMessage(String.format("DEBUG: prodDate '%s' -> valid by YEAR -> %s", param, getYearFromDate(prodDate)));
+                return true;
+            } else {
+                printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by YEAR -> %s", param, getYearFromDate(prodDate)));
+                return false;
+            }
+        } else {
+            printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by Long", param));
+            return false;
+        }
+    }
+    // check isUsed
+    public static boolean isUsedValid(String param){
+        boolean isUsed = getBoolean(param);
+        if (isUsed){
+            printMessage(String.format("DEBUG: isUsed '%s' -> true", param));
+            return  true;
+        } else {
+            printMessage(String.format("DEBUG: isUsed '%s' -> false", param));
+            return false;
+        }
+    }
+    // check speed
+    public static boolean isSpeedValid(String param){
+        if (isDouble(param)) {
+            double speed = Double.parseDouble(param);
+            if (speed >= 0.01 && speed <= 0.99){
+                printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> valid", speed));
+                return true;
+            } else {
+                printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> NOT valid", speed));
+                return false;
+            }
+        } else {
+            printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> NOT valid", param));
+            return false;
+        }
+    }
+    // check crew
+    public static boolean isCrewValid(String param){
+        if (isDigit(param)){
+            int crewSize = Integer.parseInt(param);
+            if (crewSize >= 1 && crewSize <= 9999){
+                printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> valid", crewSize));
+                return true;
+            } else {
+                printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> NOT valid", crewSize));
+                return false;
+            }
+        } else {
+            printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> NOT valid", param));
+            return false;
+        }
+    }
 
     // check Long
     public static boolean isLong(String param){
@@ -530,6 +608,13 @@ public class ShipHelper {
         } else {
             return false;
         }
+    }
+
+    // get double rounded by hundred
+    public static double roundDoubleToHunderd(Double d){
+        d = d * 100;
+        int x1 = (int)Math.round(d);
+        return (double) x1 / 100;
     }
 
     // get year from date

@@ -35,17 +35,17 @@ public class ShipHelper {
     // get getCorrectPageCount
     public static List<Ship> getCorrectPageCount(List<Ship> ships, Map<String, String> allParams){
         // Example: [pageNumber=0, pageSize=3, order=SPEED]
-        if (allParams.containsKey("pageNumber") && allParams.containsKey("pageSize")){
-            pageNumber = Integer.parseInt(allParams.get("pageNumber"));
-            pageSize = Integer.parseInt(allParams.get("pageSize"));
-            printMessage(String.format("DEBUG: Get pageNumber %d and pageSize %s", pageNumber, pageSize));
+        // if no pageNumber -> use '0'
+        // if no pageSize -> use '3'
+        pageNumber = allParams.containsKey("pageNumber") ? Integer.parseInt(allParams.get("pageNumber")) : 0;
+        pageSize = allParams.containsKey("pageSize") ? Integer.parseInt(allParams.get("pageSize")) : 3;
 
-            int from = Math.max(0,pageNumber*pageSize);
-            int to = Math.min(ships.size(),(pageNumber+1)*pageSize);
+        printMessage(String.format("DEBUG: Get pageNumber %d and pageSize %s", pageNumber, pageSize));
 
-            return ships.subList(from,to);
-        }
-        return ships;
+        int from = Math.max(0,pageNumber*pageSize);
+        int to = Math.min(ships.size(),(pageNumber+1)*pageSize);
+
+        return ships.subList(from,to);
     }
 
     // get correct sort
@@ -114,6 +114,8 @@ public class ShipHelper {
     }
 
     // create correct rating for ship
+
+    // check id - is valide?
 
     // debug ships list
     public static void printShipsList(List<Ship> ships){

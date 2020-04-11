@@ -3,6 +3,7 @@ package com.space.service;
 import com.space.model.Ship;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ShipService {
 
@@ -17,6 +18,7 @@ public interface ShipService {
      * @return ships list
      */
     List<Ship> readAll();
+    List<Ship> readAll(Map<String, String> allParams);
 
     /**
      * Return ship by ID

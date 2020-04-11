@@ -1,5 +1,6 @@
 package com.space.controller;
 
+import com.space.ShipHelper;
 import com.space.model.Ship;
 import com.space.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,9 @@ public class ShipController {
     public ResponseEntity<List<Ship>> readAll(
             @RequestParam(required = false) Map<String,String> allParams
     ) {
-        System.out.println("DEBUG: CONTROLLER GET readAll");
-        System.out.println("Parameters are " + allParams.entrySet());
-        final List<Ship> ships = shipService.readAll();
+        ShipHelper.printMessage("DEBUG: CONTROLLER GET readAll");
+        ShipHelper.printMessage("Parameters are " + allParams.entrySet());
+        final List<Ship> ships = shipService.readAll(allParams);
         return ships != null && !ships.isEmpty()
                 ? new ResponseEntity<>(ships, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -47,7 +48,7 @@ public class ShipController {
     // create
     @PostMapping(value = "/rest/ships")
     public ResponseEntity<?> create(@RequestBody Ship ship) {
-        System.out.println("DEBUG: CONTROLLER CREATE");
+        ShipHelper.printMessage("DEBUG: CONTROLLER CREATE");
         shipService.create(ship);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -55,7 +56,7 @@ public class ShipController {
     // count
     @GetMapping(value = "/rest/ships/count")
     public ResponseEntity<Long> count() {
-        System.out.println("DEBUG: CONTROLLER GET count");
+        ShipHelper.printMessage("DEBUG: CONTROLLER GET count");
         final long shipsCount = shipService.count();
         return new ResponseEntity<>(shipsCount, HttpStatus.OK);
     }
@@ -63,7 +64,7 @@ public class ShipController {
     // delete
     @DeleteMapping(value = "/rest/ships/{id}")
     public ResponseEntity<?> delete(@PathVariable(required = true) long id) {
-        System.out.println("DEBUG: CONTROLLER DELETE");
+        ShipHelper.printMessage("DEBUG: CONTROLLER DELETE");
         boolean isDeleted = shipService.delete(id);
         return isDeleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

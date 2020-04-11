@@ -1,5 +1,6 @@
 package com.space.service;
 
+import com.space.ShipHelper;
 import com.space.model.Ship;
 import com.space.repository.ShipsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,32 +31,34 @@ public class ShipServiceImpl implements ShipService {
     // create
     @Override
     public void create(Ship ship) {
-        System.out.println("DEBUG: ShipServiceImpl CREATE");
-        System.out.println("/**** Check INPUT parameters");
+        ShipHelper.printMessage("DEBUG: ShipServiceImpl CREATE");
+        ShipHelper.printMessage("/**** Check INPUT parameters");
         shipsRepository.save(ship);
         if (isExistByID(ship.id)){
-            System.out.println("SHIP CREATED SUCCESSFULLY!");
-            System.out.println(ship.toString());
+            ShipHelper.printMessage("SHIP CREATED SUCCESSFULLY!");
+            ShipHelper.printMessage(ship.toString());
         }
-        System.out.println("***********************");
+        ShipHelper.printMessage("***********************");
     }
 
     // get without params
     @Override
     public List<Ship> readAll() {
         List<Ship> ships = new ArrayList<>();
-        System.out.println("DEBUG: ShipServiceImpl SHOW ALL (empty)");
+        ShipHelper.printMessage("DEBUG: ShipServiceImpl SHOW ALL (empty)");
 
             ships = shipsRepository.findAll();
         return ships;
     }
+    @Override
     // get with params
     // Parameters are [name=www, shipType=MERCHANT, after=-62126972453848, isUsed=true, pageNumber=0, pageSize=3, order=ID]
     public List<Ship> readAll(Map<String, String> allParams) {
-        // result list
-        List<Ship> ships = new ArrayList<>();
-        System.out.println("DEBUG: ShipServiceImpl SHOW ALL (with params)");
-        ships = shipsRepository.findAll();
+        ShipHelper.printMessage("DEBUG: ShipServiceImpl SHOW ALL (with params)");
+        // get all ships
+        List<Ship> ships = shipsRepository.findAll();
+        // create correct ships list from full
+        ships = ShipHelper.getShipsOnPage(ships, allParams);
         return ships;
     }
 
@@ -87,7 +90,7 @@ public class ShipServiceImpl implements ShipService {
     public boolean delete(long id) {
         if (shipsRepository.existsById(id)) {
             shipsRepository.deleteById(id);
-            System.out.println(String.format("DEBUG: Ship with ID %d deleted successfully.", id));
+            ShipHelper.printMessage(String.format("DEBUG: Ship with ID %d deleted successfully.", id));
             return true;
         }
         return false;

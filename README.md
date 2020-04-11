@@ -16,4 +16,5 @@ For run the project:
   $ mvn -DskipTests=true clean install
 - deploy project into Tomcat;
 
-![](https://github.com/soulbrat/space/edit/master/space.PNG | width=100)
+
+![test image size](https://github.com/soulbrat/space/edit/master/space.PNG ){:height="100px" width="100px"}

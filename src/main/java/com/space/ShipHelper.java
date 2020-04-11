@@ -32,6 +32,12 @@ public class ShipHelper {
         ships = getShipsByFilter(ships, allParams);
 
         /*
+        Get correct Ships size after filter and before pageSize/Number
+        Used for: 'Ships found'
+        */
+        count = ships.size();
+
+        /*
         return correct size
         Example: [pageNumber=0, pageSize=3]
         */
@@ -43,7 +49,7 @@ public class ShipHelper {
         */
         ships = getCorrectSort(ships, allParams);
 
-        count = ships.size();
+
         return ships;
     }
 

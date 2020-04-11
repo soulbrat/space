@@ -65,7 +65,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public Ship read(long id) {
         // not use getOne(), because it returns a reference and will be Serialisation error | not an Object.
-        return  shipsRepository.findById(id).get();
+        return shipsRepository.findById(id).get();
     }
 
     @Override
@@ -79,13 +79,15 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public boolean update(Ship ship, long id) {
-        if (shipsRepository.existsById(id)) {
-            ship.setId(id);
-            shipsRepository.save(ship);
-            return true;
-        }
-        return false;
+    public boolean update(long id, Map<String, String> allParams) {
+        // get ship from DB
+        Ship ship = shipsRepository.findById(id).get();
+        // update parameters
+        ship = ShipHelper.getUpdatedShip(ship, allParams);
+        // save updated ship
+        shipsRepository.save(ship);
+        // return result
+        return true;
     }
 
     @Override

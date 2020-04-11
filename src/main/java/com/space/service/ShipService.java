@@ -21,6 +21,7 @@ public interface ShipService {
 
     /**
      * Return the list of all ships (with filters)
+     * @param allParams obligatory filter parameters
      * @return ships list
      */
     List<Ship> readAll(Map<String, String> allParams);
@@ -46,13 +47,11 @@ public interface ShipService {
     long count();
 
     /**
-     * Update the ship with the given ID,
-     * in accordance with the transferred ship
-     * @param ship - the ship according to which you need to update data
+     * Update the ship with the given ID
      * @param id - id of the ship whose update you want
-     * @return - true if the data has been updated, otherwise false
+     * @param allParams NOT obligatory filter parameters
      */
-    boolean update(Ship ship, long id);
+    boolean update(long id, Map<String, String> allParams);
 
     /**
      * Delete the ship with the given ID

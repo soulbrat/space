@@ -16,7 +16,7 @@ public class ShipHelper {
         }
     }
 
-    // need to return correct count of ships, depends on "findByName", pageNumber, pageSize and order
+    // need to return correct count of ships, depends on "findByName", pageNumber, pageSize and order filters if they are
     public static List<Ship> getShipsOnPage(List<Ship> ships, Map<String, String> allParams){
 
         ShipHelper.printMessage("DEBUG: getShipsOnPage");
@@ -380,6 +380,45 @@ public class ShipHelper {
         Collections.sort(ships, compareByRating);
         return ships;
     }
+
+
+    // return updated ship by provided parameters
+    public static Ship getUpdatedShip(Ship ship, Map<String, String> allParameters){
+        /*
+        * must be updated only not null fields
+        * fields ID and Rating from Request Body must be ignored
+        * while creation or updating we need to recount ship rating by formula
+        */
+        ShipHelper.printMessage("DEBUG: getUpdatedShip");
+        return ship;
+    }
+
+    // get new ship rating by formula
+    public static double getNewRating(Ship ship){
+        /*
+        * Formula:
+        * K = 1 if isUsed = false, 0.5 if isUsed = true
+        * y1 = prodDate year
+        * y0 = current year (now is 3019 year)
+        * R = (80 * speed * K) / (y0 - y1 + 1)
+        */
+        double k;
+        if (!ship.isUsed()){
+            k = 1;
+        } else {
+            k = 0.5;
+        }
+
+        
+
+
+        double result = 0;
+
+        return result;
+    }
+
+
+
 
     // check Long
     public static boolean isLong(String param){

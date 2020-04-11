@@ -70,6 +70,25 @@ public class ShipController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    // update by ID
+    @PostMapping(value = "/rest/ships/{id}")
+    public ResponseEntity<?> update(@PathVariable(required = true) long id, @RequestParam(required = false) Map<String,String> allParams) {
+        ShipHelper.printMessage("DEBUG: CONTROLLER UPDATE");
+        // check ID, if false -> 400
+        if (!ShipHelper.isLong(String.valueOf(id))){
+            ShipHelper.printMessage("DEBUG delete: HttpStatus.BAD_REQUEST 400");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        // check ship in DB, if not found -> 404
+        if (!shipService.isExistByID(id)){
+            ShipHelper.printMessage("DEBUG delete: HttpStatus.NOT_FOUND 404");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        shipService.update(id, allParams);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+
     // count
     @GetMapping(value = "/rest/ships/count")
     public ResponseEntity<Integer> count() {

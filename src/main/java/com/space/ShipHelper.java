@@ -22,8 +22,10 @@ public class ShipHelper {
 
         ShipHelper.printMessage("DEBUG: getShipsOnPage");
         // return correct count
+        // Example: [pageNumber=0, pageSize=3]
         ships = getCorrectPageCount(ships, allParams);
         //sort by request
+        // Example: [order=SPEED]
         ships = getCorrectSort(ships, allParams);
 
 
@@ -33,10 +35,17 @@ public class ShipHelper {
     // get getCorrectPageCount
     public static List<Ship> getCorrectPageCount(List<Ship> ships, Map<String, String> allParams){
         // Example: [pageNumber=0, pageSize=3, order=SPEED]
-        List<Ship> result = new ArrayList<>(ships);
+        if (allParams.containsKey("pageNumber") && allParams.containsKey("pageSize")){
+            pageNumber = Integer.parseInt(allParams.get("pageNumber"));
+            pageSize = Integer.parseInt(allParams.get("pageSize"));
+            printMessage(String.format("Get pageNumber %d and pageSize %s", pageNumber, pageSize));
 
+            int from = Math.max(0,pageNumber*pageSize);
+            int to = Math.min(ships.size(),(pageNumber+1)*pageSize);
 
-        return result;
+            return ships.subList(from,to);
+        }
+        return ships;
     }
 
     // get correct sort

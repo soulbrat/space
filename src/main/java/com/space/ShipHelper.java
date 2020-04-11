@@ -11,7 +11,7 @@ public class ShipHelper {
     private static int pageNumber;
     private static int pageSize;
     private static String order;
-    public static int count = 0;
+    public static int count = 0;    // get count of founded ships
 
     public static void printMessage(String message){
         if (isDebugEnabled) {
@@ -32,7 +32,7 @@ public class ShipHelper {
         ships = getShipsByFilter(ships, allParams);
 
         /*
-        Get correct Ships size after filter and before pageSize/Number
+        Get correct Ships count after filter and before pageSize/Number
         Used for: 'Ships found'
         */
         count = ships.size();
@@ -53,7 +53,7 @@ public class ShipHelper {
         return ships;
     }
 
-    // get ships by filter
+    // get ships by filters
     public static List<Ship> getShipsByFilter(List<Ship> ships, Map<String, String> allParams){
         List<Ship> result = new ArrayList<>();
         // name=Falcon9
@@ -68,8 +68,13 @@ public class ShipHelper {
         if (allParams.containsKey("shipType")){
             ships = getShipsByType(ships, allParams.get("shipType"));
         }
-
         // after=32165295455955, before=32228367455955
+        if (allParams.containsKey("after")){
+            ships = getShipsByDateAfter(ships, allParams.get("after"));
+        }
+        if (allParams.containsKey("before")){
+            ships = getShipsByDateBefore(ships, allParams.get("before"));
+        }
         // isUsed=true
         // minSpeed=0.7, maxSpeed=0.9
         // minCrewSize=2, maxCrewSize=20
@@ -114,7 +119,44 @@ public class ShipHelper {
                 result.add(ship);
             }
         }
-
+        return result;
+    }
+    // get ships by Date | after
+    public static List<Ship> getShipsByDateAfter(List<Ship> ships, String stringAfter) {
+        List<Ship> result = new ArrayList<>();
+        long after;
+        if (isLong(stringAfter)){
+            after = Long.parseLong(stringAfter);
+        } else {
+            // if after/before not correct -> return not modified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            long shipDate = ship.getProdDate().getTime();
+            if (shipDate >= after){
+                printMessage(String.format("DEBUG: getShipsByDate | searchByAfter %d was found ship %s with Date %d", after, ship.getName(), shipDate));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
+    // get ships by Date | before
+    public static List<Ship> getShipsByDateBefore(List<Ship> ships, String stringBefore) {
+        List<Ship> result = new ArrayList<>();
+        long before;
+        if (isLong(stringBefore)){
+            before = Long.parseLong(stringBefore);
+        } else {
+            // if after/before not correct -> return not modified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            long shipDate = ship.getProdDate().getTime();
+            if (shipDate <= before ){
+                printMessage(String.format("DEBUG: getShipsByDate | searchByBefore %d was found ship %s with Date %d", before, ship.getName(), shipDate));
+                result.add(ship);
+            }
+        }
         return result;
     }
 
@@ -200,8 +242,17 @@ public class ShipHelper {
         return ships;
     }
 
-    // get count for founded ships
 
+    // check Long
+    public static boolean isLong(String param){
+        boolean result = false;
+        try {
+            long l = Long.parseLong(param);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
 
     // debug ships list
     public static void printShipsList(List<Ship> ships){

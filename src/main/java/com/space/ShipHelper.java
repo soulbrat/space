@@ -92,7 +92,14 @@ public class ShipHelper {
         if (allParams.containsKey("maxCrewSize")){
             ships = getShipsByMaxCrewSize(ships, allParams.get("maxCrewSize"));
         }
-        // minRating=1.1, maxRating=1.3
+        // minRating
+        if (allParams.containsKey("minRating")){
+            ships = getShipsByMinRating(ships, allParams.get("minRating"));
+        }
+        // maxRating
+        if (allParams.containsKey("maxRating")){
+            ships = getShipsByMaxRating(ships, allParams.get("maxRating"));
+        }
         return ships;
     }
 
@@ -194,14 +201,9 @@ public class ShipHelper {
             return ships;
         }
         for (Ship ship : ships) {
-            try {
-                if (Double.compare(ship.getSpeed(), minSpeed) >= 0) {
-                    printMessage(String.format("DEBUG: getShipsBySpeed | searchByMinSpeed %s was found ship %s speed = %s", minSpeed, ship.getName(), ship.getSpeed()));
-                    result.add(ship);
-                }
-            }catch (Exception e){
-                printMessage(e.toString());
-                e.printStackTrace();
+            if (Double.compare(ship.getSpeed(), minSpeed) >= 0) {
+                printMessage(String.format("DEBUG: getShipsBySpeed | searchByMinSpeed %s was found ship %s speed = %s", minSpeed, ship.getName(), ship.getSpeed()));
+                result.add(ship);
             }
         }
         return result;
@@ -255,6 +257,42 @@ public class ShipHelper {
         for (Ship ship : ships) {
             if (ship.getCrewSize() <= maxCrewSize){
                 printMessage(String.format("DEBUG: getShipsByMaxCrewSize | searchByCrewSize %s was found ship %s crewSize = %s", maxCrewSize, ship.getName(), ship.getCrewSize()));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
+    // get ships by minRating
+    public static List<Ship> getShipsByMinRating(List<Ship> ships, String param) {
+        List<Ship> result = new ArrayList<>();
+        double minRating;
+        if (isDouble(param)){
+            minRating = Double.parseDouble(param);
+        } else {
+            // if provided minRating is not correct -> return unmodified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            if (ship.getRating() >= minRating){
+                printMessage(String.format("DEBUG: getShipsByMinRating | searchByMinRating %s was found ship %s speed = %s", minRating, ship.getName(), ship.getRating()));
+                result.add(ship);
+            }
+        }
+        return result;
+    }
+    // get ships by maxRating
+    public static List<Ship> getShipsByMaxRating(List<Ship> ships, String param) {
+        List<Ship> result = new ArrayList<>();
+        double maxRating;
+        if (isDouble(param)){
+            maxRating = Double.parseDouble(param);
+        } else {
+            // if provided minRating is not correct -> return unmodified list
+            return ships;
+        }
+        for (Ship ship : ships) {
+            if (ship.getRating() <= maxRating){
+                printMessage(String.format("DEBUG: getShipsByMaxRating | searchByMaxRating %s was found ship %s speed = %s", maxRating, ship.getName(), ship.getRating()));
                 result.add(ship);
             }
         }

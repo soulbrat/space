@@ -7,8 +7,8 @@ import java.util.*;
 
 public class ShipHelper {
 
-    private static boolean isDebugEnabled = true;
-    public static int count = 0;    // get count of founded ships
+    private static boolean isDebugEnabled = true;   // enable/disable log to console while debug
+    public static int count = 0;                    // get count of founded ships
 
     public static void printMessage(String message){
         if (isDebugEnabled) {

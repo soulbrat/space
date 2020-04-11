@@ -44,7 +44,7 @@ public interface ShipService {
      * Return ships count
      * @return - ships count
      */
-    long count();
+    int count();
 
     /**
      * Update the ship with the given ID

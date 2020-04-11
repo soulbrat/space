@@ -93,7 +93,7 @@ public class ShipController {
     @GetMapping(value = "/rest/ships/count")
     public ResponseEntity<Integer> count() {
         ShipHelper.printMessage("DEBUG: CONTROLLER GET count");
-        return new ResponseEntity<>(ShipHelper.count, HttpStatus.OK);
+        return new ResponseEntity<>(shipService.count(), HttpStatus.OK);
     }
 
     // delete

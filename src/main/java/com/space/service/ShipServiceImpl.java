@@ -74,8 +74,8 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public long count() {
-        return shipsRepository.count();
+    public int count() {
+        return ShipHelper.count;
     }
 
     @Override

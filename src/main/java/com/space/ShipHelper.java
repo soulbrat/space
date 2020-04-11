@@ -3,6 +3,7 @@ package com.space;
 import com.space.model.Ship;
 import com.space.model.ShipType;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ShipHelper {
@@ -390,11 +391,13 @@ public class ShipHelper {
         * while creation or updating we need to recount ship rating by formula
         */
         ShipHelper.printMessage("DEBUG: getUpdatedShip");
+        double rating = getNewRating(ship);
         return ship;
     }
 
     // get new ship rating by formula
     public static double getNewRating(Ship ship){
+        ShipHelper.printMessage("DEBUG: getNewRating");
         /*
         * Formula:
         * K = 1 if isUsed = false, 0.5 if isUsed = true
@@ -402,14 +405,12 @@ public class ShipHelper {
         * y0 = current year (now is 3019 year)
         * R = (80 * speed * K) / (y0 - y1 + 1)
         */
-        double k;
-        if (!ship.isUsed()){
-            k = 1;
-        } else {
-            k = 0.5;
-        }
+        double coefficient = ship.isUsed() ? 0.5 : 1;
+        int y0 = 3019;
+        int y1 = getYearFromDate(ship.getProdDate());
+        double speed = ship.getSpeed();
 
-        
+        printMessage(String.format("DEBUG: R = ( 80 * %d * %d) / ( %d - %d + 1)", speed, coefficient, y0, y1));
 
 
         double result = 0;
@@ -460,6 +461,13 @@ public class ShipHelper {
         } else {
             return false;
         }
+    }
+
+    // get year from date
+    public static int getYearFromDate(Date date){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+        int year = Integer.parseInt(df.format(date));
+        return year;
     }
 
     // debug ships list

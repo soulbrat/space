@@ -34,16 +34,32 @@ public class ShipController {
 
     // get
     @GetMapping(value = "/rest/ships")
-    public ResponseEntity<List<Ship>> readAll(
-            @RequestParam(required = false) Map<String,String> allParams
-    ) {
+    public ResponseEntity<List<Ship>> readAll(@RequestParam(required = false) Map<String,String> allParams) {
         ShipHelper.printMessage("DEBUG: CONTROLLER GET readAll");
         ShipHelper.printMessage("Parameters are " + allParams.entrySet());
         final List<Ship> ships = shipService.readAll(allParams);
-        //
         return ships != null
                 ? new ResponseEntity<>(ships, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    // get ship by ID
+    @GetMapping(value = "/rest/ships/{id}")
+    public ResponseEntity<?> getShipById(@PathVariable(required = true) long id) {
+        ShipHelper.printMessage("DEBUG: CONTROLLER GET SHIP BY ID: " + id);
+        // check ID, if false -> 400
+        if (!ShipHelper.isLong(String.valueOf(id))){
+            ShipHelper.printMessage("DEBUG getShipById: HttpStatus.BAD_REQUEST 400");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        // check ship in DB, if not found -> 404
+        if (!shipService.isExistByID(id)){
+            ShipHelper.printMessage("DEBUG getShipById: HttpStatus.NOT_FOUND 404");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        // get ship
+        final Ship ship = shipService.read(id);
+        return new ResponseEntity<>(ship, HttpStatus.OK);
     }
 
     // create
@@ -67,12 +83,12 @@ public class ShipController {
         ShipHelper.printMessage("DEBUG: CONTROLLER DELETE");
         // check ID, if false -> 400
         if (!ShipHelper.isLong(String.valueOf(id))){
-            ShipHelper.printMessage("DEBUG: HttpStatus.BAD_REQUEST 400");
+            ShipHelper.printMessage("DEBUG delete: HttpStatus.BAD_REQUEST 400");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         // check ship in DB, if not found -> 404
         if (!shipService.isExistByID(id)){
-            ShipHelper.printMessage("DEBUG: HttpStatus.NOT_FOUND 404");
+            ShipHelper.printMessage("DEBUG delete: HttpStatus.NOT_FOUND 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // delete ship

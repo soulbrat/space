@@ -41,18 +41,18 @@ public class ShipServiceImpl implements ShipService {
         ShipHelper.printMessage("***********************");
     }
 
-    // get without params
+    // get all ships without params
     @Override
     public List<Ship> readAll() {
         List<Ship> ships = new ArrayList<>();
         ShipHelper.printMessage("DEBUG: ShipServiceImpl SHOW ALL (empty)");
-
-            ships = shipsRepository.findAll();
+        ships = shipsRepository.findAll();
         return ships;
     }
+
     @Override
-    // get with params
-    // Parameters are [name=www, shipType=MERCHANT, after=-62126972453848, isUsed=true, pageNumber=0, pageSize=3, order=ID]
+    // get all ships with params
+    // Example: Parameters are [name=www, shipType=MERCHANT, after=-62126972453848, isUsed=true, pageNumber=0, pageSize=3, order=ID]
     public List<Ship> readAll(Map<String, String> allParams) {
         ShipHelper.printMessage("DEBUG: ShipServiceImpl SHOW ALL (with params)");
         // get all ships
@@ -64,8 +64,10 @@ public class ShipServiceImpl implements ShipService {
 
     @Override
     public Ship read(long id) {
-        return shipsRepository.getOne(id);
+        // not use getOne(), because it returns a reference and will be Serialisation error | not an Object.
+        return  shipsRepository.findById(id).get();
     }
+
     @Override
     public boolean isExistByID(long id) {
         return shipsRepository.existsById(id);

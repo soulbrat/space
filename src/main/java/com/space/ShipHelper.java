@@ -128,10 +128,10 @@ public class ShipHelper {
         return result;
     }
     // get ships by ShipType
-    public static List<Ship> getShipsByType(List<Ship> ships, String type){
+    public static List<Ship> getShipsByType(List<Ship> ships, String param){
         List<Ship> result = new ArrayList<>();
         // get Enum from String
-        ShipType shipType = ShipType.valueOf(type);
+        ShipType shipType = ShipType.valueOf(param);
         for (Ship ship : ships){
             if (ship.getShipType() == shipType){
                 printMessage(String.format("DEBUG: getShipsByType | searchByType %s was found ship %s", shipType, ship.getShipType()));
@@ -141,11 +141,11 @@ public class ShipHelper {
         return result;
     }
     // get ships by Date | after
-    public static List<Ship> getShipsByDateAfter(List<Ship> ships, String stringAfter) {
+    public static List<Ship> getShipsByDateAfter(List<Ship> ships, String param) {
         List<Ship> result = new ArrayList<>();
         long after;
-        if (isLong(stringAfter)){
-            after = Long.parseLong(stringAfter);
+        if (isLong(param)){
+            after = Long.parseLong(param);
         } else {
             // if after/before is not correct -> return unmodified list
             return ships;
@@ -160,11 +160,11 @@ public class ShipHelper {
         return result;
     }
     // get ships by Date | before
-    public static List<Ship> getShipsByDateBefore(List<Ship> ships, String stringBefore) {
+    public static List<Ship> getShipsByDateBefore(List<Ship> ships, String param) {
         List<Ship> result = new ArrayList<>();
         long before;
-        if (isLong(stringBefore)){
-            before = Long.parseLong(stringBefore);
+        if (isLong(param)){
+            before = Long.parseLong(param);
         } else {
             // if after/before is not correct -> return unmodified list
             return ships;

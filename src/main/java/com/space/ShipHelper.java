@@ -1,6 +1,7 @@
 package com.space;
 
 import com.space.model.Ship;
+import com.space.model.ShipType;
 
 import java.util.*;
 
@@ -56,6 +57,10 @@ public class ShipHelper {
             ships = getShipsByPlanet(ships, allParams.get("planet"));
         }
         // shipType=MILITARY
+        if (allParams.containsKey("shipType")){
+            ships = getShipsByType(ships, allParams.get("shipType"));
+        }
+
         // after=32165295455955, before=32228367455955
         // isUsed=true
         // minSpeed=0.7, maxSpeed=0.9
@@ -88,6 +93,20 @@ public class ShipHelper {
                 result.add(ship);
             }
         }
+        return result;
+    }
+    // get ships by ShipType
+    public static List<Ship> getShipsByType(List<Ship> ships, String type){
+        List<Ship> result = new ArrayList<>();
+        // get Enum from String
+        ShipType shipType = ShipType.valueOf(type);
+        for (Ship ship : ships){
+            if (ship.getShipType() == shipType){
+                printMessage(String.format("DEBUG: getShipsByType | searchByType %s was found ship %s", shipType, ship.getShipType()));
+                result.add(ship);
+            }
+        }
+
         return result;
     }
 

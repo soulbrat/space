@@ -15,8 +15,3 @@ For run the project:
 - compile project with Maven used command:
   $ mvn -DskipTests=true clean install
 - deploy project into Tomcat;
-
-
-
-
-![alt tag](https://github.com/soulbrat/space/edit/master/space.PNG)

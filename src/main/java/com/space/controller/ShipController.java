@@ -71,10 +71,14 @@ public class ShipController {
         if (body.isEmpty() || body.size() < 6 || !shipService.isBodyValid(body)){
             ShipHelper.printMessage("DEBUG create: HttpStatus.BAD_REQUEST 400 -> incorrect body");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            // check each parameter additionally
+        } else if (!body.containsKey("name") || !body.containsKey("planet") || !body.containsKey("prodDate") || !body.containsKey("speed") || !body.containsKey("crewSize")){
+            ShipHelper.printMessage("DEBUG create: HttpStatus.BAD_REQUEST 400 -> incorrect body");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         long id = shipService.create(body);
         return shipService.isExistByID(id)
-                ? new ResponseEntity<>(HttpStatus.OK)
+                ? new ResponseEntity<>(shipService.read(id), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 

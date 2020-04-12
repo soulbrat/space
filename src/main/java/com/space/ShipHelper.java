@@ -9,7 +9,6 @@ import java.util.*;
 public class ShipHelper {
 
     private static boolean isDebugEnabled = true;   // enable/disable log to console while debug
-    public static int count = 0;                    // get count of founded ships
 
     public static void printMessage(String message){
         if (isDebugEnabled) {
@@ -30,12 +29,6 @@ public class ShipHelper {
         ships = getShipsByFilter(ships, allParams);
 
         /*
-        Get correct Ships count after filter and before pageSize/Number
-        Used for: 'Ships found'
-        */
-        count = ships.size();
-
-        /*
         return correct size
         Example: [pageNumber=0, pageSize=3]
         */
@@ -47,8 +40,18 @@ public class ShipHelper {
         */
         ships = getCorrectSort(ships, allParams);
 
-
         return ships;
+    }
+
+    //
+    public static int getShipsCount(List<Ship> ships, Map<String, String> allParams){
+        ShipHelper.printMessage("DEBUG: getShipsCount");
+        /*
+        Get correct Ships count after filter and without pageSize/Number
+        Used for: 'Ships found'
+        */
+        ships = getShipsByFilter(ships, allParams);
+        return ships.size();
     }
 
     // get ships by filters
@@ -383,83 +386,94 @@ public class ShipHelper {
     }
 
 
-    // return updated ship by provided parameters
-    public static Ship getUpdatedShip(Ship ship, Map<String, String> allParams){
-        /*
-        * must be updated only not null fields
-        * fields ID and Rating from Request Body must be ignored
-        * while creation or updating we need to recount ship rating by formula
-        */
-        ShipHelper.printMessage("DEBUG: getUpdatedShip");
-        // get new Rating
-        double rating = getNewRating(ship);
-        printMessage("DEBUG: rating: " + rating);
-        if (!allParams.isEmpty()){
-            // possible parameters: [name, planet, shipType, prodDate, isUsed, speed, crewSize]
-            ShipHelper.printMessage("DEBUG: getUpdatedShip -> set new parameters: " + allParams.entrySet());
-            // name
-            if (allParams.containsKey("name")){
-                String param = allParams.get("name");
-                if (isStringValid(param)){
-                   ship.setName(param);
+    // check is body empty
+    public static boolean isBodyValid(Ship ship){
+        return false;
+    }
+
+    // check all characteristics of the ship | get from body request
+    public static boolean areParamsValid(Map<String, String> request) {
+        ShipHelper.printMessage("DEBUG: areParamsValid");
+
+        for (Map.Entry<String, String> pair : request.entrySet()){
+            String param = pair.getKey();
+            String value = pair.getValue();
+            if (param.equals("name") || param.equals("planet")){
+                if (!isStringValid(value)) {
+                    return false;
                 }
             }
-            // planet
-            if (allParams.containsKey("planet")){
-                if (allParams.containsKey("planet")){
-                    String param = allParams.get("planet");
-                    if (isStringValid(param)){
-                        ship.setPlanet(param);
-                    }
+            if (param.equals("shipType")){
+                if (!isTypeValid(value)) {
+                    return false;
                 }
             }
-            // shipType
-            if (allParams.containsKey("shipType")){
-                String param = allParams.get("shipType");
-                if (isTypeValid(param)){
-                    ShipType shipType = ShipType.valueOf(param);
-                    ship.setShipType(shipType);
+            if (param.equals("prodDate")){
+                if (!isYearValid(new Date(Long.parseLong(value)))) {
+                    return false;
                 }
             }
-            // Date
-            if (allParams.containsKey("prodDate")){
-                String param = allParams.get("prodDate");
-                if (isYearValid(param)){
-                    Date prodDate = new Date(Long.parseLong(param));
-                    ship.setProdDate(prodDate);
+            if (param.equals("isUsed")){
+                if (!isUsedValid(value)) {
+                    return false;
                 }
             }
-            // isUsed
-            if (allParams.containsKey("isUsed")){
-                String param = allParams.get("isUsed");
-                if (isUsedValid(param)){
-                    boolean isUsed = getBoolean(param);
-                    ship.isUsed = isUsed;
-                }
-            } else {
-                // if no parameter isUsed -> set false;
-                ship.isUsed = false;
-                printMessage(String.format("DEBUG: isUsed '%s' -> false", "NONE"));
-            }
-            // speed
-            if (allParams.containsKey("speed")) {
-                String param = allParams.get("speed");
-                if (isSpeedValid(param)){
-                    double d = Double.parseDouble(param);
-                    double speed = roundDoubleToHunderd(d);
-                    printMessage("DEBUG: speed -> " + speed);
-                    ship.setSpeed(speed);
+            if (param.equals("speed")){
+                if (!isSpeedValid(value)) {
+                    return false;
                 }
             }
-            // crewSize
-            if (allParams.containsKey("crewSize")) {
-                String param = allParams.get("crewSize");
-                if (isCrewValid(param)){
-                    int crewSize = Integer.parseInt(param);
-                    ship.setCrewSize(crewSize);
+            if (param.equals("crewSize")){
+                if (!isCrewValid(value)) {
+                    return false;
                 }
             }
         }
+        ShipHelper.printMessage("DEBUG: areParamsValid -> valid");
+        return true;
+    }
+
+    // return updated ship by provided body parameters
+    public static Ship getUpdatedShip(Ship ship, Map<String, String> body){
+        /*
+        * fields ID and Rating from Request Body must be ignored
+        * while creation or updating we need to recount ship rating by formula
+        */
+        ShipHelper.printMessage("DEBUG: getUpdatedShip | ship before update:");
+        ShipHelper.printMessage(ship.toString());
+
+        // get new Rating
+        double rating = getNewRating(ship);
+        printMessage("DEBUG: rating: " + rating);
+        // set new Rating
+        ship.setRating(rating);
+
+        // all body parameters already checked
+        for (Map.Entry<String, String> pair : body.entrySet()){
+            String param = pair.getKey();
+            String value = pair.getValue();
+            if (param.equals("name") || param.equals("planet")) {
+                ship.setName(value);
+            }
+            if (param.equals("shipType")) {
+                ship.setShipType(ShipType.valueOf(value));
+            }
+            if (param.equals("prodDate")){
+                ship.setProdDate(new Date(Long.parseLong(value)));
+            }
+            if (param.equals("isUsed")){
+                ship.setUsed(Boolean.parseBoolean(value));
+            }
+            if (param.equals("speed")){
+                ship.setSpeed(Double.parseDouble(value));
+            }
+            if (param.equals("crewSize")){
+                ship.setCrewSize(Integer.parseInt(value));
+            }
+        }
+
+        ShipHelper.printMessage("DEBUG: getUpdatedShip | ship after update:");
+        ShipHelper.printMessage(ship.toString());
         return ship;
     }
 
@@ -487,7 +501,7 @@ public class ShipHelper {
 
     // check String of 'name|planet'
     public static boolean isStringValid(String param){
-        if (param != null && !param.isEmpty() && param.length() >= 0 && param.length() <= 50){
+        if (param != null && !param.isEmpty() && param.length() > 0 && param.length() <= 50){
             printMessage(String.format("DEBUG: isStringValid '%s' -> valid", param));
             return true;
         } else {
@@ -503,67 +517,75 @@ public class ShipHelper {
             printMessage(String.format("DEBUG: isTypeValid '%s' -> valid", param));
             return true;
         }catch (Exception e){
-            printMessage(String.format("DEBUG: isTypeValid '%s' -> NOT valid", param));
+            printMessage(String.format("DEBUG: isTypeValid '%s' -> NOT valid | Exception", param));
             return false;
         }
     }
     // check Year
-    public static boolean isYearValid(String param){
-        if (isLong(param)){
-            Date prodDate = new Date(Long.parseLong(param));
-            if (getYearFromDate(prodDate) >= 2800 && getYearFromDate(prodDate) <= 3019){
+    public static boolean isYearValid(Date date){
+        try {
+            if (getYearFromDate(date) >= 2800 && getYearFromDate(date) <= 3019) {
                 // example: DEBUG: prodDate '30867438851980' -> valid by YEAR -> 2948
-                printMessage(String.format("DEBUG: prodDate '%s' -> valid by YEAR -> %s", param, getYearFromDate(prodDate)));
+                printMessage(String.format("DEBUG: prodDate '%s' -> valid by YEAR -> %s", date, getYearFromDate(date)));
                 return true;
             } else {
-                printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by YEAR -> %s", param, getYearFromDate(prodDate)));
+                printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by YEAR -> %s", date, getYearFromDate(date)));
                 return false;
             }
-        } else {
-            printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by Long", param));
+        }catch (Exception e){
+            printMessage(String.format("DEBUG: prodDate '%s' -> NOT valid by YEAR -> %s | Exception", date, getYearFromDate(date)));
             return false;
         }
     }
     // check isUsed
     public static boolean isUsedValid(String param){
-        boolean isUsed = getBoolean(param);
-        if (isUsed){
-            printMessage(String.format("DEBUG: isUsed '%s' -> true", param));
-            return  true;
+        if (param.equals("true") || param.equals("false")){
+            printMessage(String.format("DEBUG: isUsed '%s' -> correct", param));
+            return true;
         } else {
-            printMessage(String.format("DEBUG: isUsed '%s' -> false", param));
+            printMessage(String.format("DEBUG: isUsed '%s' -> NOT correct", param));
             return false;
         }
     }
     // check speed
     public static boolean isSpeedValid(String param){
-        if (isDouble(param)) {
-            double speed = Double.parseDouble(param);
-            if (speed >= 0.01 && speed <= 0.99){
-                printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> valid", speed));
-                return true;
+        try {
+            if (param != null && !param.isEmpty() && isDouble(param)) {
+                double speed = Double.parseDouble(param);
+                if (speed >= 0.01 && speed <= 0.99) {
+                    printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> valid", speed));
+                    return true;
+                } else {
+                    printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> NOT valid", speed));
+                    return false;
+                }
             } else {
-                printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> NOT valid", speed));
+                printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> NOT valid", param));
                 return false;
             }
-        } else {
-            printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> NOT valid", param));
+        }catch (Exception e){
+            printMessage(String.format("DEBUG: isSpeedValid '%s' speed -> NOT valid | Exception", param));
             return false;
         }
     }
     // check crew
     public static boolean isCrewValid(String param){
-        if (isDigit(param)){
-            int crewSize = Integer.parseInt(param);
-            if (crewSize >= 1 && crewSize <= 9999){
-                printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> valid", crewSize));
-                return true;
+        try {
+            if (param != null && !param.isEmpty() && isDigit(param)) {
+                int crewSize = Integer.parseInt(param);
+                if (crewSize >= 1 && crewSize <= 9999) {
+                    printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> valid", crewSize));
+                    return true;
+                } else {
+                    printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> NOT valid", crewSize));
+                    return false;
+                }
             } else {
-                printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> NOT valid", crewSize));
+                printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> NOT valid", param));
                 return false;
             }
-        } else {
-            printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> NOT valid", param));
+        }catch (Exception e){
+            printMessage(String.format("DEBUG: isCrewValid '%s' crewSize -> NOT valid | Exception", param));
             return false;
         }
     }
@@ -573,7 +595,7 @@ public class ShipHelper {
         try {
             long l = Long.parseLong(param);
             // any long and especially ID must be correct positive numbers
-            if (l >= 0) {
+            if (l > 0) {
                 return true;
             } else {
                 return false;

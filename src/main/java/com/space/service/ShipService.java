@@ -34,24 +34,40 @@ public interface ShipService {
     Ship read(long id);
 
     /**
+     * Return boolean is ID valid
+     * @param id - ship ID
+     * @return - true if valid, false if not valid
+     */
+    boolean isIdValid(long id);
+
+    /**
+     * Return boolean if ship body is valid
+     * @param body body for checking
+     * @return - true if body is ok, false if no
+     */
+    boolean isBodyValid(Map<String, String> body);
+
+    /**
      * Check ship by ID in database
      * @param id - ship ID
      * @return - true if exist in DB, false if no
      */
     boolean isExistByID(long id);
 
-    /**
-     * Return ships count
-     * @return - ships count
-     */
-    int count();
 
     /**
-     * Update the ship with the given ID
-     * @param id - id of the ship whose update you want
+     * Return ships count
      * @param allParams NOT obligatory filter parameters
+     * @return - ships count
      */
-    boolean update(long id, Map<String, String> allParams);
+    int count(Map<String, String> allParams);
+
+    /**
+     * Update the ship with the given ID and provided body parameters
+     * @param id - ship ID
+     * @param body parameters for update
+     */
+    boolean update(long id, Map<String, String> body);
 
     /**
      * Delete the ship with the given ID

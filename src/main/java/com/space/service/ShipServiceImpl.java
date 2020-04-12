@@ -69,21 +69,35 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
+    public boolean isIdValid(long id) {
+        return ShipHelper.isLong(String.valueOf(id));
+    }
+
+    @Override
+    public boolean isBodyValid(Map<String, String> body) {
+        return ShipHelper.areParamsValid(body);
+    }
+
+    @Override
     public boolean isExistByID(long id) {
         return shipsRepository.existsById(id);
     }
 
     @Override
-    public int count() {
-        return ShipHelper.count;
+    public int count(Map<String, String> allParams) {
+        // get all ships
+        List<Ship> ships = shipsRepository.findAll();
+        // create correct ships list from full
+        int count = ShipHelper.getShipsCount(ships, allParams);
+        return count;
     }
 
     @Override
-    public boolean update(long id, Map<String, String> allParams) {
-        // get ship from DB
+    public boolean update(long id, Map<String, String> body) {
+        // get original ship
         Ship ship = shipsRepository.findById(id).get();
         // update parameters
-        ship = ShipHelper.getUpdatedShip(ship, allParams);
+        ship = ShipHelper.getUpdatedShip(ship, body);
         // save updated ship
         shipsRepository.save(ship);
         // return result

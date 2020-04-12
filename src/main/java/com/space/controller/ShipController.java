@@ -48,7 +48,7 @@ public class ShipController {
     public ResponseEntity<?> getShipById(@PathVariable(required = true) long id) {
         ShipHelper.printMessage("DEBUG: CONTROLLER GET SHIP BY ID: " + id);
         // check ID, if false -> 400
-        if (!ShipHelper.isLong(String.valueOf(id))){
+        if (!shipService.isIdValid(id)){
             ShipHelper.printMessage("DEBUG getShipById: HttpStatus.BAD_REQUEST 400");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -72,36 +72,54 @@ public class ShipController {
 
     // update by ID
     @PostMapping(value = "/rest/ships/{id}")
-    public ResponseEntity<?> update(@PathVariable(required = true) long id, @RequestParam(required = false) Map<String,String> allParams) {
+    public ResponseEntity<?> update(@PathVariable(required = true) long id, @RequestBody Map<String, String> body) {
         ShipHelper.printMessage("DEBUG: CONTROLLER UPDATE");
         // check ID, if false -> 400
-        if (!ShipHelper.isLong(String.valueOf(id))){
-            ShipHelper.printMessage("DEBUG delete: HttpStatus.BAD_REQUEST 400");
+        if (!shipService.isIdValid(id)){
+            ShipHelper.printMessage("DEBUG update: HttpStatus.BAD_REQUEST 400 -> incorrect ID");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        ShipHelper.printMessage("DEBUG ID: " + id);
         // check ship in DB, if not found -> 404
         if (!shipService.isExistByID(id)){
-            ShipHelper.printMessage("DEBUG delete: HttpStatus.NOT_FOUND 404");
+            ShipHelper.printMessage("DEBUG update: HttpStatus.NOT_FOUND 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        shipService.update(id, allParams);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ShipHelper.printMessage("DEBUG update | BODY: " + body.entrySet());
+        // if ID correct and body is empty -> return ship with code 200 without changes
+        if (body.isEmpty()){
+            // get with ship old parameters, recalculate rating and save | update
+            Ship oldShip = shipService.read(id);
+            //shipService.update(id, oldShip);
+            ShipHelper.printMessage("DEBUG update: HttpStatus.OK 200 -> Empty body");
+            return new ResponseEntity<>(oldShip, HttpStatus.OK);
+        }
+        // check new ship parameters in body
+        if (!shipService.isBodyValid(body)){
+            ShipHelper.printMessage("DEBUG update: HttpStatus.BAD_REQUEST 400 -> incorrect body");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        // update ship with provided body parameters
+        shipService.update(id, body);
+        Ship ship = shipService.read(id);
+        return new ResponseEntity<>(ship, HttpStatus.OK);
     }
-
 
     // count
     @GetMapping(value = "/rest/ships/count")
-    public ResponseEntity<Integer> count() {
+    public ResponseEntity<Integer> count(@RequestParam(required = false) Map<String,String> allParams) {
         ShipHelper.printMessage("DEBUG: CONTROLLER GET count");
-        return new ResponseEntity<>(shipService.count(), HttpStatus.OK);
+        ShipHelper.printMessage("Parameters are " + allParams.entrySet());
+        // need to get ships count without paging | with parameters if they are
+        return new ResponseEntity<>(shipService.count(allParams), HttpStatus.OK);
     }
 
     // delete
     @DeleteMapping(value = "/rest/ships/{id}")
     public ResponseEntity<?> delete(@PathVariable(required = true) long id) {
-        ShipHelper.printMessage("DEBUG: CONTROLLER DELETE");
+        ShipHelper.printMessage("DEBUG: CONTROLLER DELETE: {ID} -> " + id);
         // check ID, if false -> 400
-        if (!ShipHelper.isLong(String.valueOf(id))){
+        if (!shipService.isIdValid(id)){
             ShipHelper.printMessage("DEBUG delete: HttpStatus.BAD_REQUEST 400");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -114,4 +132,5 @@ public class ShipController {
         boolean isDeleted = shipService.delete(id);
         return isDeleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }

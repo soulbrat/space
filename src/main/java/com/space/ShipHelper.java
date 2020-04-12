@@ -442,18 +442,17 @@ public class ShipHelper {
         ShipHelper.printMessage("DEBUG: getUpdatedShip | ship before update:");
         ShipHelper.printMessage(ship.toString());
 
-        // get new Rating
-        double rating = getNewRating(ship);
-        printMessage("DEBUG: rating: " + rating);
-        // set new Rating
-        ship.setRating(rating);
+
 
         // all body parameters already checked
         for (Map.Entry<String, String> pair : body.entrySet()){
             String param = pair.getKey();
             String value = pair.getValue();
-            if (param.equals("name") || param.equals("planet")) {
+            if (param.equals("name")) {
                 ship.setName(value);
+            }
+            if (param.equals("planet")) {
+                ship.setPlanet(value);
             }
             if (param.equals("shipType")) {
                 ship.setShipType(ShipType.valueOf(value));
@@ -470,6 +469,11 @@ public class ShipHelper {
             if (param.equals("crewSize")){
                 ship.setCrewSize(Integer.parseInt(value));
             }
+            // get new Rating
+            double rating = getNewRating(ship);
+            printMessage("DEBUG: rating: " + rating);
+            // set new Rating
+            ship.setRating(rating);
         }
 
         ShipHelper.printMessage("DEBUG: getUpdatedShip | ship after update:");

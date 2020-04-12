@@ -25,7 +25,7 @@ public class Ship {
     @Column(name = "prodDate")
     public Date prodDate;
     @Column(name = "isUsed")
-    public boolean isUsed;
+    public boolean isUsed = false;
     @Column(name = "speed")
     public double speed;
     @Column(name = "crewSize")

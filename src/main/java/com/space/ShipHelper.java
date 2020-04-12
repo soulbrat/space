@@ -442,8 +442,6 @@ public class ShipHelper {
         ShipHelper.printMessage("DEBUG: getUpdatedShip | ship before update:");
         ShipHelper.printMessage(ship.toString());
 
-
-
         // all body parameters already checked
         for (Map.Entry<String, String> pair : body.entrySet()){
             String param = pair.getKey();
@@ -469,28 +467,70 @@ public class ShipHelper {
             if (param.equals("crewSize")){
                 ship.setCrewSize(Integer.parseInt(value));
             }
-            // get new Rating
-            double rating = getNewRating(ship);
-            printMessage("DEBUG: rating: " + rating);
-            // set new Rating
-            ship.setRating(rating);
         }
+        // get new Rating
+        double rating = getNewRating(ship);
+        printMessage("DEBUG: rating: " + rating);
+        // set new Rating
+        ship.setRating(rating);
 
         ShipHelper.printMessage("DEBUG: getUpdatedShip | ship after update:");
         ShipHelper.printMessage(ship.toString());
         return ship;
     }
 
+    // create new ship from provided body
+    public static Ship createNewShip(Map<String, String> body){
+        printMessage("DEBUG: createNewShip");
+        Ship ship = new Ship();
+        // all body parameters already checked
+        for (Map.Entry<String, String> pair : body.entrySet()){
+            String param = pair.getKey();
+            String value = pair.getValue();
+            if (param.equals("name")) {
+                ship.setName(value);
+            }
+            if (param.equals("planet")) {
+                ship.setPlanet(value);
+            }
+            if (param.equals("shipType")) {
+                ship.setShipType(ShipType.valueOf(value));
+            }
+            if (param.equals("prodDate")){
+                ship.setProdDate(new Date(Long.parseLong(value)));
+            }
+            if (param.equals("isUsed")){
+                ship.setUsed(Boolean.parseBoolean(value));
+            }
+            if (param.equals("speed")){
+                ship.setSpeed(Double.parseDouble(value));
+            }
+            if (param.equals("crewSize")){
+                ship.setCrewSize(Integer.parseInt(value));
+            }
+        }
+        // get new Rating
+        double rating = getNewRating(ship);
+        printMessage("DEBUG: rating: " + rating);
+        // set new Rating
+        ship.setRating(rating);
+
+        printMessage("DEBUG: new ship OBJECT created:");
+        printMessage(ship.toString());
+        return ship;
+    }
+
+
     // get new ship rating by formula
     public static double getNewRating(Ship ship){
         ShipHelper.printMessage("DEBUG: getNewRating");
         /*
-        * Formula:
-        * K = 1 if isUsed = false, 0.5 if isUsed = true
-        * y1 = prodDate year
-        * y0 = current year (now is 3019 year)
-        * R = (80 * speed * K) / (y0 - y1 + 1)
-        */
+         * Formula:
+         * K = 1 if isUsed = false, 0.5 if isUsed = true
+         * y1 = prodDate year
+         * y0 = current year (now is 3019 year)
+         * R = (80 * speed * K) / (y0 - y1 + 1)
+         */
         double coefficient = ship.isUsed() ? 0.5 : 1;
         int y0 = 3019;
         int y1 = getYearFromDate(ship.getProdDate());
@@ -498,7 +538,7 @@ public class ShipHelper {
 
         printMessage(String.format("DEBUG: R = ( 80 * %s * %s) / ( %s - %s + 1)", speed, coefficient, y0, y1));
 
-        double d = ( 80 * speed * coefficient) / (y0 - y1 + 1);
+        double d = (80 * speed * coefficient) / (y0 - y1 + 1);
         double result = roundDoubleToHunderd(d);
         return result;
     }

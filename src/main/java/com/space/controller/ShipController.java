@@ -64,10 +64,18 @@ public class ShipController {
 
     // create
     @PostMapping(value = "/rest/ships")
-    public ResponseEntity<?> create(@RequestBody Ship ship) {
+    public ResponseEntity<?> create(@RequestBody(required = true) Map<String, String> body) {
         ShipHelper.printMessage("DEBUG: CONTROLLER CREATE");
-        shipService.create(ship);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ShipHelper.printMessage("DEBUG create | BODY: " + body.entrySet());
+        // if not enough parameters or body is empty or some parameters are invalid -> 400
+        if (body.isEmpty() || body.size() < 6 || !shipService.isBodyValid(body)){
+            ShipHelper.printMessage("DEBUG create: HttpStatus.BAD_REQUEST 400 -> incorrect body");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        long id = shipService.create(body);
+        return shipService.isExistByID(id)
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     // update by ID

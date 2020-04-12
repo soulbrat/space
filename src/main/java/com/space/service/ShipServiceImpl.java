@@ -30,15 +30,14 @@ public class ShipServiceImpl implements ShipService {
 
     // create
     @Override
-    public void create(Ship ship) {
+    public long create(Map<String, String> body) {
         ShipHelper.printMessage("DEBUG: ShipServiceImpl CREATE");
-        ShipHelper.printMessage("/**** Check INPUT parameters");
-        shipsRepository.save(ship);
-        if (isExistByID(ship.id)){
-            ShipHelper.printMessage("SHIP CREATED SUCCESSFULLY!");
-            ShipHelper.printMessage(ship.toString());
-        }
-        ShipHelper.printMessage("***********************");
+        Ship ship = ShipHelper.createNewShip(body); // get new ship object | it's not in DB yet
+        shipsRepository.save(ship);                 // save new ship into DB
+        long id = ship.getId();                     // id will be created automatically after saved to DB via repository
+        ShipHelper.printMessage("DEBUG: new ship ENTITY created in DB:");
+        ShipHelper.printMessage(ship.toString());
+        return id;
     }
 
     // get all ships without params

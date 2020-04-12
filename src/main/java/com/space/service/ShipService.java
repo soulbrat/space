@@ -9,9 +9,10 @@ public interface ShipService {
 
     /**
      * Create new ship
-     * @param ship - ship for creation
+     * @param body for ship creation
+     * @return new ship id
      */
-    void create(Ship ship);
+    long create(Map<String, String> body);
 
     /**
      * Return the list of all ships (without filters)

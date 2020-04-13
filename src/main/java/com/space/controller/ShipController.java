@@ -11,20 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-/*
-@RestController — говорит спрингу, что данный класс является REST контроллером.
-Т.е. в данном классе будет реализована логика обработки клиентских запросов
-
-Params - https://www.baeldung.com/spring-request-param
-*/
 @RestController
 public class ShipController {
 
-    /* Dependency Injection
-    @Autowired — говорит спрингу, что в этом месте необходимо внедрить зависимость.
-    В конструктор мы передаем интерфейс ShipService. Реализацию данного сервиса мы пометили аннотацией
-    @Service ранее, и теперь спринг сможет передать экземпляр этой реализации в конструктор контроллера.
-    */
     private ShipService shipService;
 
     @Autowired

@@ -21,7 +21,9 @@ For run the project:
 ![space](https://github.com/soulbrat/space/blob/master/img/space2.PNG)
 
 #
-# RestAPI Doc
+
+# Rest API Documentation
+
 #
 ![RestAP](https://github.com/soulbrat/space/blob/master/img/RestAPI_doc1.JPG)
 ![RestAP](https://github.com/soulbrat/space/blob/master/img/RestAPI_doc2.JPG)

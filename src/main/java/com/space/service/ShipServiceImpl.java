@@ -4,23 +4,9 @@ import com.space.ShipHelper;
 import com.space.model.Ship;
 import com.space.repository.ShipsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.*;
-
-/*
-Аннотация @Service говорит спрингу, что данный класс является сервисом.
-Это специальный тип классов, в котором реализуется некоторая бизнес логика приложения.
-Впоследствии, благодаря этой аннотации Spring будет предоставлять нам экземпляр данного класса в местах, где это,
-нужно с помощью Dependency Injection.
-
-https://howtodoinjava.com/hibernate/hibernate-jpa-2-persistence-annotations-tutorial/
-
-@Column(name="FNAME",length=100,nullable=false)
-private String  firstName;
-*/
 
 @Service
 public class ShipServiceImpl implements ShipService {
@@ -50,8 +36,14 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
+    public Ship read(long id) {
+        // not use getOne(), because it returns a reference and will be Serialisation error | not an Object.
+        return shipsRepository.findById(id).get();
+    }
+
     // get all ships with params
     // Example: Parameters are [name=www, shipType=MERCHANT, after=-62126972453848, isUsed=true, pageNumber=0, pageSize=3, order=ID]
+    @Override
     public List<Ship> readAll(Map<String, String> allParams) {
         ShipHelper.printMessage("DEBUG: ShipServiceImpl SHOW ALL (with params)");
         // get all ships
@@ -59,12 +51,6 @@ public class ShipServiceImpl implements ShipService {
         // create correct ships list from full
         ships = ShipHelper.getShipsOnPage(ships, allParams);
         return ships;
-    }
-
-    @Override
-    public Ship read(long id) {
-        // not use getOne(), because it returns a reference and will be Serialisation error | not an Object.
-        return shipsRepository.findById(id).get();
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.space.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;

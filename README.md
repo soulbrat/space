@@ -16,4 +16,6 @@ For run the project:
   $ mvn -DskipTests=true clean install
 - deploy project into Tomcat;
 
-![scape](https://github.com/soulbrat/space/blob/master/space.PNG)
+![scape](https://github.com/soulbrat/space/blob/master/space1.PNG)
+![scape](https://github.com/soulbrat/space/blob/master/space3.PNG)
+![scape](https://github.com/soulbrat/space/blob/master/space2.PNG)

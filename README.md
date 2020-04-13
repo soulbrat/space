@@ -1,9 +1,9 @@
 # space
 
-This Project based on:
+This Project is simple CRUD (Create Read Update Delete) Database Management Web Application using:
 - Maven;
 - Tomcat 9;
-- Spring / Spring MVC / Rest API;
+- Spring 5 / Spring MVC / Rest API;
 - Spring Data JPA;
 - Hibernate;
 - MySQL;

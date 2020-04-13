@@ -8,7 +8,7 @@ import java.util.*;
 
 public class ShipHelper {
 
-    private static boolean isDebugEnabled = false;   // enable/disable log to console while debug
+    private static boolean isDebugEnabled = true;   // enable/disable log to console while debug
 
     public static void printMessage(String message){
         if (isDebugEnabled) {
